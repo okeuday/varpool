@@ -116,7 +116,7 @@ internal_test() ->
     end,
     PN = receive
         Up1 ->
-            {'UP', process, _, _} = Up1,
+            {'UP', process, _, {_, _}} = Up1,
             {updated, P6} = varpool:update(Up1, P5),
             P6
     end,
