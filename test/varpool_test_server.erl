@@ -92,19 +92,38 @@ internal_test() ->
                        [{group_0, {varpool_test_server, start_link, []}, 
                          [{count_hash, 4}, {count_random, 4}]}
                         ]}]),
-    Pool = lists:foldl(fun(_, P1) ->
+    P3 = lists:foldl(fun(_, P1) ->
         receive
-            Up ->
-                {updated, P2} = varpool:update(Up, P1),
+            Up0 ->
+                {'UP', process, _, {_, _}} = Up0,
+                {updated, P2} = varpool:update(Up0, P1),
                 P2
         end
     end, P0, lists:seq(1, 16)),
-    Child0 = varpool:get(group_0, 0, Pool),
-    Child1 = varpool:get(group_0, 1, Pool),
+    Child0 = varpool:get(group_0, 0, P3),
+    Child1 = varpool:get(group_0, 1, P3),
     true = (Child0 /= Child1),
+    true = is_pid(Child0),
+    true = is_pid(Child1),
     pong = varpool_test_server:ping(Child0),
     pong = varpool_test_server:ping(Child1),
-    ok = varpool:destroy(Pool),
+    erlang:exit(Child0, kill),
+    P5 = receive
+        Down0 ->
+            {'DOWN', _, process, _, _} = Down0,
+            {updated, P4} = varpool:update(Down0, P3),
+            P4
+    end,
+    PN = receive
+        Up1 ->
+            {'UP', process, _, _} = Up1,
+            {updated, P6} = varpool:update(Up1, P5),
+            P6
+    end,
+    Child0New = varpool:get(group_0, 0, PN),
+    true = (Child0 /= Child0New),
+    true = is_pid(Child0New),
+    ok = varpool:destroy(PN),
     ok.
 
 -endif.
