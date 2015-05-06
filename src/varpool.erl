@@ -69,6 +69,7 @@
 
 -record(varpool,
     {
+        owner :: pid(),
         supervisor :: pid(),
         max_r :: non_neg_integer(),
         max_t :: pos_integer(),
@@ -105,23 +106,29 @@ new([_ | _] = Options) ->
             (MaxT * 1000) - 100
     end,
     {GroupsData, GroupsSupervisor} = groups(Groups, ShutdownDefault),
-    {ok, Supervisor} = varpool_sup:start_link(self(), MaxR, MaxT,
+    Owner = self(),
+    {ok, Supervisor} = varpool_sup:start_link(Owner, MaxR, MaxT,
                                               GroupsSupervisor),
-    #varpool{supervisor = Supervisor,
+    #varpool{owner = Owner,
+             supervisor = Supervisor,
              max_r = MaxR,
              max_t = MaxT,
              groups = GroupsData}.
 
-destroy(#varpool{supervisor = Supervisor,
+destroy(#varpool{owner = Owner,
+                 supervisor = Supervisor,
                  monitors = Monitors}) ->
+    true = Owner =:= self(),
     [erlang:demonitor(MonitorRef) || MonitorRef <- Monitors],
     ok = varpool_sup:stop_link(Supervisor),
     ok.
 
 update({'UP', process, Child, {Group, I} = Info},
-       #varpool{groups = Groups,
+       #varpool{owner = Owner,
+                groups = Groups,
                 processes = Processes,
                 monitors = Monitors} = VarPool) ->
+    true = Owner =:= self(),
     NewProcesses = dict:store(Child, Info, Processes),
     GroupState = dict:fetch(Group, Groups),
     #group{processes = GroupProcesses} = GroupState,
@@ -133,9 +140,11 @@ update({'UP', process, Child, {Group, I} = Info},
                               processes = NewProcesses,
                               monitors = NewMonitors}};
 update({'DOWN', MonitorRef, process, Child, _Info},
-       #varpool{groups = Groups,
+       #varpool{owner = Owner,
+                groups = Groups,
                 processes = Processes,
                 monitors = Monitors} = VarPool) ->
+    true = Owner =:= self(),
     case dict:find(Child, Processes) of
         error ->
             {ignored, VarPool};
@@ -151,7 +160,9 @@ update({'DOWN', MonitorRef, process, Child, _Info},
                                       processes = NewProcesses,
                                       monitors = NewMonitors}}
     end;
-update(_, VarPool) ->
+update(_,
+       #varpool{owner = Owner} = VarPool) ->
+    true = Owner =:= self(),
     {ignored, VarPool}.
 
 get(Group, #varpool{groups = Groups}) ->
