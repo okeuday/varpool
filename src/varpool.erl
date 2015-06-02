@@ -86,9 +86,30 @@
             random:uniform(Count) - 1
         end).
 
+-type group() ::
+    {Group :: any(),
+     {M :: module(), F :: atom(), A :: list()},
+     Options :: list({shutdown, pos_integer()} |
+                     {count_hash, pos_integer()} |
+                     {count_random, pos_integer()} |
+                     {hash,
+                      {module(), atom()} |
+                      fun((any(), pos_integer()) -> non_neg_integer())} |
+                     {random,
+                      {module(), atom()} |
+                      fun((pos_integer()) -> non_neg_integer())})}.
+-type options() ::
+    nonempty_list({max_r, non_neg_integer()} |
+                  {max_t, pos_integer()} |
+                  {groups, nonempty_list(group())}).
+-export_type([options/0]).
+
 %%%------------------------------------------------------------------------
 %%% External interface functions
 %%%------------------------------------------------------------------------
+
+-spec new(Options :: options()) ->
+    #varpool{}.
 
 new([_ | _] = Options) ->
     Defaults = [
@@ -115,6 +136,9 @@ new([_ | _] = Options) ->
              max_t = MaxT,
              groups = GroupsData}.
 
+-spec destroy(#varpool{}) ->
+    ok.
+
 destroy(#varpool{owner = Owner,
                  supervisor = Supervisor,
                  monitors = Monitors}) ->
@@ -123,8 +147,13 @@ destroy(#varpool{owner = Owner,
     ok = varpool_sup:stop_link(Supervisor),
     ok.
 
-update({'UP', process, Child, {Group, I} = Info},
+-spec update(any(), #varpool{}) ->
+    {updated, #varpool{}} |
+    {ignored, #varpool{}}.
+
+update({'UP', Supervisor, process, Child, {Group, I} = Info},
        #varpool{owner = Owner,
+                supervisor = Supervisor,
                 groups = Groups,
                 processes = Processes,
                 monitors = Monitors} = VarPool) ->
@@ -165,6 +194,9 @@ update(_,
     true = Owner =:= self(),
     {ignored, VarPool}.
 
+-spec get(Group :: any(), #varpool{}) ->
+    pid() | undefined.
+
 get(Group, #varpool{groups = Groups}) ->
     #group{count_hash = 1,
            count_random = CountRandom,
@@ -187,6 +219,9 @@ get(Group, #varpool{groups = Groups}) ->
         is_pid(Child) ->
             Child
     end.
+
+-spec get(Group :: any(), Key :: any(), #varpool{}) ->
+    pid() | undefined.
 
 get(Group, Key, #varpool{groups = Groups}) ->
     #group{count_hash = CountHash,

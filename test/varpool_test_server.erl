@@ -95,7 +95,7 @@ internal_test() ->
     P3 = lists:foldl(fun(_, P1) ->
         receive
             Up0 ->
-                {'UP', process, _, {_, _}} = Up0,
+                {'UP', _, process, _, {_, _}} = Up0,
                 {updated, P2} = varpool:update(Up0, P1),
                 P2
         end
@@ -116,7 +116,7 @@ internal_test() ->
     end,
     PN = receive
         Up1 ->
-            {'UP', process, _, {_, _}} = Up1,
+            {'UP', _, process, _, {_, _}} = Up1,
             {updated, P6} = varpool:update(Up1, P5),
             P6
     end,

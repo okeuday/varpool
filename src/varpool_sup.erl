@@ -156,7 +156,7 @@ init([Parent, MaxR, MaxT, Pool]) ->
 %%%------------------------------------------------------------------------
 
 monitor_up_message(Parent, Child, Group, I) ->
-    Parent ! {'UP', process, Child, {Group, I}}.
+    Parent ! {'UP', self(), process, Child, {Group, I}}.
 
 child_specs([], ChildSpecs, _) ->
     ChildSpecs;
