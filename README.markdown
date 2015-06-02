@@ -31,7 +31,7 @@ usage of the process or it could have occurred due to an internal error
 within the pool source code.  While you can easily argue that a stacktrace
 will show you the cause of the error, you will be unable to easily determine
 if the stacktrace occurred during or after the error on one side
-or the other.  The ambiguity and complexity in the #2 approach makes it
+or the other.  The ambiguity and complexity in the #1 approach makes it
 error-prone.
 
 A second major negative aspect of the #1 approach is the scalability impact
