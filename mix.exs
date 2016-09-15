@@ -3,7 +3,7 @@ defmodule Varpool.Mixfile do
 
   def project do
     [app: :varpool,
-     version: "1.5.2",
+     version: "1.5.3",
      description: description,
      package: package,
      deps: deps]
