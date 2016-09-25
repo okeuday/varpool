@@ -10,6 +10,7 @@
         ]},
    {registered, []},
    {applications, [
+        reltool_util,
         stdlib,
         kernel
         ]}]}.
