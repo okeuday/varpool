@@ -3,7 +3,7 @@ defmodule Varpool.Mixfile do
 
   def project do
     [app: :varpool,
-     version: "1.5.4-rc1",
+     version: "1.5.4",
      description: description,
      package: package,
      deps: deps]
@@ -15,7 +15,7 @@ defmodule Varpool.Mixfile do
   end
 
   defp deps do
-    [{:reltool_util, "~> 1.5.3"}]
+    [{:reltool_util, "~> 1.5.4"}]
   end
 
   defp description do
