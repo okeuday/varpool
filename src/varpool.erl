@@ -8,7 +8,7 @@
 %%%
 %%% BSD LICENSE
 %%% 
-%%% Copyright (c) 2015-2016, Michael Truog <mjtruog at gmail dot com>
+%%% Copyright (c) 2015-2017, Michael Truog <mjtruog at gmail dot com>
 %%% All rights reserved.
 %%% 
 %%% Redistribution and use in source and binary forms, with or without
@@ -43,8 +43,8 @@
 %%% DAMAGE.
 %%%
 %%% @author Michael Truog <mjtruog [at] gmail (dot) com>
-%%% @copyright 2015-2016 Michael Truog
-%%% @version 0.2.0 {@date} {@time}
+%%% @copyright 2015-2017 Michael Truog
+%%% @version 1.7.1 {@date} {@time}
 %%%------------------------------------------------------------------------
 
 -module(varpool).
@@ -87,7 +87,7 @@
 -endif.
 -ifdef(ERLANG_OTP_VERSION_18_FEATURES).
 -define(PSEUDO_RANDOM(N),
-        % assuming exsplus for 58 bits, period 8.31e34
+        % assuming exsplus/exsp for 58 bits, period 8.31e34
         rand:uniform(N)).
 -else.
 -define(PSEUDO_RANDOM(N),
