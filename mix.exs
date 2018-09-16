@@ -6,7 +6,24 @@ defmodule Varpool.Mixfile do
 
   def project do
     [app: :varpool,
-     version: "1.7.3",
+     version: "1.7.4",
+     language: :erlang,
+     erlc_options: [
+       {:d, :erlang.list_to_atom('ERLANG_OTP_VERSION_' ++ :erlang.system_info(:otp_release))},
+       :debug_info,
+       :warnings_as_errors,
+       :strict_validation,
+       :warn_bif_clash,
+       :warn_deprecated_function,
+       :warn_export_all,
+       :warn_export_vars,
+       :warn_exported_vars,
+       :warn_obsolete_guard,
+       :warn_shadow_vars,
+       :warn_unused_import,
+       :warn_unused_function,
+       :warn_unused_record,
+       :warn_unused_vars],
      description: description(),
      package: package(),
      deps: deps()]
@@ -18,7 +35,7 @@ defmodule Varpool.Mixfile do
   end
 
   defp deps do
-    [{:reltool_util, "~> 1.7.3"}]
+    [{:reltool_util, "~> 1.7.4"}]
   end
 
   defp description do
