@@ -6,7 +6,7 @@ defmodule Varpool.Mixfile do
 
   def project do
     [app: :varpool,
-     version: "1.7.5",
+     version: "1.8.0",
      language: :erlang,
      erlc_options: [
        {:d, :erlang.list_to_atom('ERLANG_OTP_VERSION_' ++ :erlang.system_info(:otp_release))},
@@ -35,7 +35,7 @@ defmodule Varpool.Mixfile do
   end
 
   defp deps do
-    [{:reltool_util, "~> 1.7.5"}]
+    [{:reltool_util, "~> 1.8.0"}]
   end
 
   defp description do
