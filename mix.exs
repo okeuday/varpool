@@ -9,7 +9,6 @@ defmodule Varpool.Mixfile do
      version: "2.0.1",
      language: :erlang,
      erlc_options: [
-       {:d, :erlang.list_to_atom('ERLANG_OTP_VERSION_' ++ :erlang.system_info(:otp_release))},
        :debug_info,
        :warnings_as_errors,
        :strict_validation,
