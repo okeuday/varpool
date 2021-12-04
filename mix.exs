@@ -6,7 +6,7 @@ defmodule Varpool.Mixfile do
 
   def project do
     [app: :varpool,
-     version: "2.0.2",
+     version: "2.0.3",
      language: :erlang,
      erlc_options: [
        :debug_info,
@@ -34,7 +34,7 @@ defmodule Varpool.Mixfile do
   end
 
   defp deps do
-    [{:reltool_util, "~> 2.0.2"}]
+    [{:reltool_util, "~> 2.0.3", app: false}]
   end
 
   defp description do
